@@ -4,10 +4,14 @@ import com.example.apartment_manager.entity.Apartment;
 import com.example.apartment_manager.dto.request.ApartmentRequest;
 import com.example.apartment_manager.dto.response.ApartmentResponse;
 import com.example.apartment_manager.dto.response.ResidentResponse;
+import com.example.apartment_manager.entity.Resident;
 import com.example.apartment_manager.exception.DataNotFoundException;
 import com.example.apartment_manager.repository.ApartmentRepository;
+import com.example.apartment_manager.repository.ResidentRepository;
 import com.example.apartment_manager.service.ApartmentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,13 +21,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ApartmentServiceImpl implements ApartmentService {
     private final ApartmentRepository apartmentRepository;
+    private final ResidentRepository residentRepository;
 
     @Override
-    public List<ApartmentResponse> getAllApartments() {
-        List<Apartment> apartments = apartmentRepository.findAll();
-        return apartments.stream()
-                .map(ApartmentResponse::fromEntity)
-                .collect(Collectors.toList());
+    public Page<ApartmentResponse> getAllApartments(Pageable pageable) {
+        Page<Apartment> apartments = apartmentRepository.findAll(pageable);
+        return apartments.map(ApartmentResponse::fromEntity);
     }
 
     @Override
@@ -69,6 +72,23 @@ public class ApartmentServiceImpl implements ApartmentService {
 
     @Override
     public List<ResidentResponse> getResidentsByApartmentId(Long apartmentId) {
-        return List.of();
+        Apartment existingApartment = apartmentRepository.findById(apartmentId)
+                .orElseThrow(() -> new DataNotFoundException("Apartment not found with id: " + apartmentId));
+        List<Resident> residents = residentRepository.findByApartment(existingApartment);
+        return residents.stream()
+                .map(ResidentResponse::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<ApartmentResponse> searchApartmentsByCode(String keyword, Pageable pageable) {
+        Page<Apartment> apartments;
+        if(keyword != null && !keyword.isBlank()){
+            apartments = apartmentRepository.findByCodeContainingIgnoreCase(keyword, pageable);
+        }
+        else{
+            apartments = Page.empty(pageable);
+        }
+        return apartments.map(ApartmentResponse::fromEntity);
     }
 }
