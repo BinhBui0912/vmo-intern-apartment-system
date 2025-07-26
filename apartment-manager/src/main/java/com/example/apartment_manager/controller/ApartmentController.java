@@ -43,7 +43,6 @@ public class ApartmentController {
         );
     }
 
-
     @PostMapping("")
     public ResponseEntity<CommonResponse<ApartmentResponse>> createApartment(
             @Valid
