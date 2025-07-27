@@ -46,7 +46,6 @@ public class ApartmentServiceImpl implements ApartmentService {
     public ApartmentResponse getApartmentById(Long apartmentId) {
         Apartment apartment = apartmentRepository.findById(apartmentId)
                 .orElseThrow(() -> new DataNotFoundException("Apartment not found with id: " + apartmentId));
-
         return ApartmentResponse.fromEntity(apartment);
     }
 

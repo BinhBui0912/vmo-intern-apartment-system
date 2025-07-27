@@ -35,6 +35,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new CommonResponse<>(400, "Malformed JSON request", null), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<CommonResponse<?>> handleIllegalArgument(IllegalArgumentException ex) {
+        return new ResponseEntity<>(new CommonResponse<>(400, ex.getMessage(), null), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<CommonResponse<?>> handleAllOtherExceptions(Exception ex) {
         ex.printStackTrace();

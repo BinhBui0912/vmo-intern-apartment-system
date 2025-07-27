@@ -3,6 +3,8 @@ package com.example.apartment_manager.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -26,8 +28,8 @@ public class Resident {
     @Column(name = "identity_number", length = 20)
     private String identityNumber;
 
-    @Column(name = "birth_year")
-    private Integer birthYear;
+    @Column(name = "date_of_birth")
+    private LocalDate dateOfBirth;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "gender", columnDefinition = "ENUM('MALE', 'FEMALE', 'OTHER')")
