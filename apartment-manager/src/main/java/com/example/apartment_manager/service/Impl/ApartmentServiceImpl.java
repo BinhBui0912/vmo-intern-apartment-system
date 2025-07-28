@@ -31,6 +31,9 @@ public class ApartmentServiceImpl implements ApartmentService {
 
     @Override
     public ApartmentResponse createApartment(ApartmentRequest request) {
+        if(apartmentRepository.existsByCode(request.getCode())) {
+            throw new IllegalArgumentException("Code already exist " + request.getCode());
+        }
         Apartment newApartment = Apartment.builder()
                 .code(request.getCode())
                 .area(request.getArea())

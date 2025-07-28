@@ -3,7 +3,7 @@ package com.example.apartment_manager.controller;
 import com.example.apartment_manager.dto.request.ResidentRequest;
 import com.example.apartment_manager.dto.response.CommonResponse;
 import com.example.apartment_manager.dto.response.ResidentResponse;
-import com.example.apartment_manager.entity.Resident;
+
 import com.example.apartment_manager.service.ResidentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

@@ -9,4 +9,5 @@ import java.util.List;
 
 public interface ApartmentRepository extends JpaRepository<Apartment, Long> {
     Page<Apartment> findByCodeContainingIgnoreCase(String keyword, Pageable pageable);
+    Boolean existsByCode(String code);
 }
