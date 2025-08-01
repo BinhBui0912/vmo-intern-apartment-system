@@ -3,6 +3,7 @@ package com.example.apartment_manager.controller;
 import com.example.apartment_manager.dto.request.ApartmentRequest;
 import com.example.apartment_manager.dto.response.ApartmentResponse;
 import com.example.apartment_manager.dto.response.CommonResponse;
+import com.example.apartment_manager.dto.response.MonthlyBillResponse;
 import com.example.apartment_manager.dto.response.ResidentResponse;
 import com.example.apartment_manager.service.ApartmentService;
 import jakarta.validation.Valid;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +25,7 @@ import java.util.List;
 public class ApartmentController {
     private final ApartmentService apartmentService;
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("")
     public ResponseEntity<CommonResponse<List<ApartmentResponse>>> getAllApartments(
             @RequestParam(value = "page", defaultValue = "0") int page,
@@ -35,6 +38,7 @@ public class ApartmentController {
         );
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<CommonResponse<ApartmentResponse>> getApartmentById(@PathVariable Long id) {
         ApartmentResponse response = apartmentService.getApartmentById(id);
@@ -43,6 +47,7 @@ public class ApartmentController {
         );
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("")
     public ResponseEntity<CommonResponse<ApartmentResponse>> createApartment(
             @Valid
@@ -52,6 +57,7 @@ public class ApartmentController {
                 .body(new CommonResponse<>(201, "Apartment created successfully", response));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<CommonResponse<ApartmentResponse>> updateApartment(
             @Valid
@@ -62,6 +68,7 @@ public class ApartmentController {
                 new CommonResponse<>(200, "Apartment updated successfully", response));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<CommonResponse<String>> deleteApartment(@PathVariable Long id) {
         apartmentService.deleteApartment(id);
@@ -69,6 +76,7 @@ public class ApartmentController {
                 new CommonResponse<>(200, "Apartment deleted successfully", null));
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("/{id}/residents")
     public ResponseEntity<CommonResponse<List<ResidentResponse>>> getResidentsByApartmentId(@PathVariable Long id){
         List<ResidentResponse> responses = apartmentService.getResidentsByApartmentId(id);
@@ -76,6 +84,15 @@ public class ApartmentController {
                 new CommonResponse<>(200, "Get Residents by ApartmentId: " + id + " successfully", responses));
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @GetMapping("/{id}/monthly-bills")
+    public ResponseEntity<CommonResponse<List<MonthlyBillResponse>>> getMonthlyBillsByApartmentId(@PathVariable Long id){
+        List<MonthlyBillResponse> responses = apartmentService.getMonthlyBillsByApartmentId(id);
+        return ResponseEntity.ok(
+                new CommonResponse<>(200, "Get Monthly Bills by ApartmentId: " + id + " successfully", responses));
+    }
+
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("/search")
     public ResponseEntity<CommonResponse<List<ApartmentResponse>>> searchApartmentsByCode(
             @RequestParam(value = "keyword", defaultValue = "") String keyword,

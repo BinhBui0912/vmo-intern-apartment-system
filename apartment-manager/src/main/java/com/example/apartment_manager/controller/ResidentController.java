@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,14 +24,20 @@ import java.util.List;
 public class ResidentController {
     private final ResidentService residentService;
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("")
-    public ResponseEntity<CommonResponse<List<ResidentResponse>>> getAllResidents(){
-        List<ResidentResponse> residents = residentService.getAllResidents();
+    public ResponseEntity<CommonResponse<List<ResidentResponse>>> getAllResidents(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size
+    ){
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
+        Page<ResidentResponse> residents = residentService.getAllResidents(pageable);
         return ResponseEntity.ok(
-                new CommonResponse<>(200, "Get all residents", residents)
+                new CommonResponse<>(200, "Get all residents", residents.getContent())
         );
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<CommonResponse<ResidentResponse>> getResidentById(@PathVariable Long id){
         ResidentResponse resident = residentService.getResidentById(id);
@@ -39,6 +46,7 @@ public class ResidentController {
         );
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("")
     public ResponseEntity<CommonResponse<ResidentResponse>> createResident(
             @Valid
@@ -48,6 +56,7 @@ public class ResidentController {
                 .body(new CommonResponse<>(201, "Resident created successfully", response));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<CommonResponse<ResidentResponse>> updateResident(
             @Valid
@@ -59,6 +68,7 @@ public class ResidentController {
         );
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<CommonResponse<String>> deleteResident(@PathVariable Long id){
         residentService.deleteResident(id);
@@ -67,6 +77,7 @@ public class ResidentController {
         );
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("/search")
     public ResponseEntity<CommonResponse<List<ResidentResponse>>> searchResidentsByName(
             @RequestParam(value = "name", defaultValue = "") String name,
@@ -75,7 +86,7 @@ public class ResidentController {
         Pageable pageable = PageRequest.of(page, size, Sort.by("fullName").ascending());
         Page<ResidentResponse> residents = residentService.searchResidentsByName(name, pageable);
         return ResponseEntity.ok(
-                new CommonResponse<>(200, "Search Residents By Name: " + name + "successfully", residents.getContent())
+                new CommonResponse<>(200, "Search Residents By Name: " + name + " successfully", residents.getContent())
         );
     }
 }

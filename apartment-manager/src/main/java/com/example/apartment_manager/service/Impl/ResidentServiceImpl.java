@@ -11,10 +11,8 @@ import com.example.apartment_manager.service.ResidentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,11 +21,9 @@ public class ResidentServiceImpl implements ResidentService {
     private final ApartmentRepository apartmentRepository;
 
     @Override
-    public List<ResidentResponse> getAllResidents() {
-        List<Resident> residents = residentRepository.findAll();
-        return residents.stream()
-                .map(ResidentResponse::fromEntity)
-                .collect(Collectors.toList());
+    public Page<ResidentResponse> getAllResidents(Pageable pageable) {
+        Page<Resident> residents = residentRepository.findAll(pageable);
+        return residents.map(ResidentResponse::fromEntity);
     }
 
     @Override
@@ -73,6 +69,15 @@ public class ResidentServiceImpl implements ResidentService {
         Resident existingResident = residentRepository.findById(residentId)
                 .orElseThrow(() ->new DataNotFoundException("Resident not found with id: " + residentId));
         boolean hasOtherRepresentative = residentRepository.existsByApartmentAndIsRepresentativeTrueAndIdNot(existingApartment, residentId);
+        if (residentRepository.existsByEmailAndIdNot(request.getEmail(), residentId)) {
+            throw new IllegalArgumentException("Email already exists: " + request.getEmail());
+        }
+        if (residentRepository.existsByPhoneNumberAndIdNot(request.getPhoneNumber(), residentId)) {
+            throw new IllegalArgumentException("Phone number already exists: " + request.getPhoneNumber());
+        }
+        if (residentRepository.existsByIdentityNumberAndIdNot(request.getIdentityNumber(), residentId)) {
+            throw new IllegalArgumentException("Identity number already exists: " + request.getIdentityNumber());
+        }
         existingResident.setFullName(request.getFullName());
         existingResident.setEmail(request.getEmail());
         existingResident.setPhoneNumber(request.getPhoneNumber());
@@ -99,13 +104,14 @@ public class ResidentServiceImpl implements ResidentService {
 
     @Override
     public Page<ResidentResponse> searchResidentsByName(String name, Pageable pageable) {
-        Page<Resident> residents;
         if(name != null && !name.isBlank()){
-            residents = residentRepository.findByFullNameContainingIgnoreCase(name, pageable);
+            Specification<Resident> spec = (root, query, cb) -> cb.conjunction();
+            spec = spec.and(((root, query, cb) ->
+                    cb.like(cb.lower(root.get("fullName")), "%" + name.toLowerCase() + "%")));
+            return residentRepository.findAll(spec, pageable).map(ResidentResponse::fromEntity);
         }
         else{
-            residents = Page.empty(pageable);
+            return Page.empty(pageable);
         }
-        return residents.map(ResidentResponse::fromEntity);
     }
 }

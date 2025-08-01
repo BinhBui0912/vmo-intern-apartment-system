@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface ResidentService {
-    List<ResidentResponse> getAllResidents();
+    Page<ResidentResponse> getAllResidents(Pageable pageable);
     ResidentResponse getResidentById(Long residentId);
     ResidentResponse createResident(ResidentRequest request);
     ResidentResponse updateResident(Long residentId, ResidentRequest request);

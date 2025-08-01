@@ -43,6 +43,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<CommonResponse<?>> handleAllOtherExceptions(Exception ex) {
         ex.printStackTrace();
+        System.out.println(ex.getMessage());
         return new ResponseEntity<>(new CommonResponse<>(500, "Internal Server Error: " + ex.getMessage(), null), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

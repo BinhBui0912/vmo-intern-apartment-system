@@ -17,7 +17,7 @@ import java.time.LocalDate;
 public class MonthlyBill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "billing_month", nullable = false)
     private LocalDate billingMonth;
@@ -37,7 +37,7 @@ public class MonthlyBill {
     @Column(name = "other_fee", precision = 10, scale = 2, columnDefinition = "DECIMAL(10,2)")
     private BigDecimal otherFee = BigDecimal.ZERO;
 
-    @Column(name = "total_amount", insertable = false, updatable = false, columnDefinition = "DECIMAL(10,2)")
+    @Column(name = "total_amount", precision = 10, scale = 2, columnDefinition = "DECIMAL(10,2)")
     private BigDecimal totalAmount;
 
     @Column(name = "due_date")

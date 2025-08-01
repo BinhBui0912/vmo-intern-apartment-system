@@ -4,6 +4,7 @@ import com.example.apartment_manager.entity.Resident;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -38,5 +39,6 @@ public class ResidentRequest {
     private Resident.Gender gender;
 
     @JsonProperty("apartment_id")
+    @NotNull(message = "Apartment ID is required")
     private Long apartmentId;
 }

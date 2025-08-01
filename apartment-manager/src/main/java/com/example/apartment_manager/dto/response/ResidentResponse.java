@@ -19,6 +19,8 @@ public class ResidentResponse {
     private String gender;
     private LocalDate dateOfBirth;
     private Boolean isRepresentative;
+    private Boolean isActive;
+    private Long apartmentId;
 
 
     public static ResidentResponse fromEntity(Resident resident) {
@@ -31,6 +33,8 @@ public class ResidentResponse {
         response.setGender(resident.getGender().toString());
         response.setDateOfBirth(resident.getDateOfBirth());
         response.setIsRepresentative(resident.getIsRepresentative());
+        response.setApartmentId(resident.getApartment().getId());
+        response.setIsActive(resident.getIsActive());
         return response;
     }
 }

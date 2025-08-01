@@ -1,17 +1,21 @@
 package com.example.apartment_manager.service.Impl;
 
+import com.example.apartment_manager.dto.response.MonthlyBillResponse;
 import com.example.apartment_manager.entity.Apartment;
 import com.example.apartment_manager.dto.request.ApartmentRequest;
 import com.example.apartment_manager.dto.response.ApartmentResponse;
 import com.example.apartment_manager.dto.response.ResidentResponse;
+import com.example.apartment_manager.entity.MonthlyBill;
 import com.example.apartment_manager.entity.Resident;
 import com.example.apartment_manager.exception.DataNotFoundException;
 import com.example.apartment_manager.repository.ApartmentRepository;
+import com.example.apartment_manager.repository.MonthlyBillRepository;
 import com.example.apartment_manager.repository.ResidentRepository;
 import com.example.apartment_manager.service.ApartmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,6 +26,7 @@ import java.util.stream.Collectors;
 public class ApartmentServiceImpl implements ApartmentService {
     private final ApartmentRepository apartmentRepository;
     private final ResidentRepository residentRepository;
+    private final MonthlyBillRepository monthlyBillRepository;
 
     @Override
     public Page<ApartmentResponse> getAllApartments(Pageable pageable) {
@@ -83,14 +88,23 @@ public class ApartmentServiceImpl implements ApartmentService {
     }
 
     @Override
+    public List<MonthlyBillResponse> getMonthlyBillsByApartmentId(Long apartmentId) {
+        Apartment existingApartment = apartmentRepository.findById(apartmentId)
+                .orElseThrow(() -> new DataNotFoundException("Apartment not found with id: " + apartmentId));
+        List<MonthlyBill> monthlyBills = monthlyBillRepository.findByApartment(existingApartment);
+        return monthlyBills.stream()
+                .map(MonthlyBillResponse::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public Page<ApartmentResponse> searchApartmentsByCode(String keyword, Pageable pageable) {
-        Page<Apartment> apartments;
-        if(keyword != null && !keyword.isBlank()){
-            apartments = apartmentRepository.findByCodeContainingIgnoreCase(keyword, pageable);
+        Specification<Apartment> spec = (root, query, cb) -> cb.conjunction();
+        if(keyword != null && !keyword.isBlank()) {
+            spec = spec.and(((root, query, cb) ->
+                    cb.like(cb.lower(root.get("code")), "%" + keyword.toLowerCase() + "%")));
         }
-        else{
-            apartments = Page.empty(pageable);
-        }
+        Page<Apartment> apartments = apartmentRepository.findAll(spec, pageable);
         return apartments.map(ApartmentResponse::fromEntity);
     }
 }
