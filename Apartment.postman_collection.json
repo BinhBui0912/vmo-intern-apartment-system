@@ -1,0 +1,904 @@
+{
+	"info": {
+		"_postman_id": "2f9efe85-4c9e-4183-a713-cfc8e1478c8a",
+		"name": "Apartment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34086725"
+	},
+	"item": [
+		{
+			"name": "apartments",
+			"item": [
+				{
+					"name": "Create Apartment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc1NDA1MzMyMCwiZXhwIjoxNzU0MTM5NzIwfQ.xK3kRXQC8guvf7pk3DtmQfRiqby9Jfz_-cXmgUPuzK2vNQjVntVcfA0hqaarRK056JMWUZiwSyJlVU_Cm3kOYA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "t",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"code\": \"A-103\",\r\n  \"area\": 22,\r\n  \"number_of_rooms\": 4,\r\n  \"floor\": 1,\r\n  \"description\": \"Căn hộ hướng Tây Nam\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/apartments",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"apartments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Apartment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc1NDA1MzMyMCwiZXhwIjoxNzU0MTM5NzIwfQ.xK3kRXQC8guvf7pk3DtmQfRiqby9Jfz_-cXmgUPuzK2vNQjVntVcfA0hqaarRK056JMWUZiwSyJlVU_Cm3kOYA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"code\": \"A-101\",\r\n  \"area\": 75.5,\r\n  \"number_of_rooms\": 3,\r\n  \"floor\": 1,\r\n  \"description\": \"Căn hộ có ma\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/apartments/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"apartments",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Apartment By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc1NDA1MzMyMCwiZXhwIjoxNzU0MTM5NzIwfQ.xK3kRXQC8guvf7pk3DtmQfRiqby9Jfz_-cXmgUPuzK2vNQjVntVcfA0hqaarRK056JMWUZiwSyJlVU_Cm3kOYA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/apartments/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"apartments",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Apartment By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc1NDA1MzMyMCwiZXhwIjoxNzU0MTM5NzIwfQ.xK3kRXQC8guvf7pk3DtmQfRiqby9Jfz_-cXmgUPuzK2vNQjVntVcfA0hqaarRK056JMWUZiwSyJlVU_Cm3kOYA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/apartments/5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"apartments",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Apartments",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc1NDA1MzMyMCwiZXhwIjoxNzU0MTM5NzIwfQ.xK3kRXQC8guvf7pk3DtmQfRiqby9Jfz_-cXmgUPuzK2vNQjVntVcfA0hqaarRK056JMWUZiwSyJlVU_Cm3kOYA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/apartments",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"apartments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Resident By Apartment Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc1NDA1MzMyMCwiZXhwIjoxNzU0MTM5NzIwfQ.xK3kRXQC8guvf7pk3DtmQfRiqby9Jfz_-cXmgUPuzK2vNQjVntVcfA0hqaarRK056JMWUZiwSyJlVU_Cm3kOYA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/apartments/1/residents",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"apartments",
+								"1",
+								"residents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Monthly Bill By Apartment Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc1NDA1MzMyMCwiZXhwIjoxNzU0MTM5NzIwfQ.xK3kRXQC8guvf7pk3DtmQfRiqby9Jfz_-cXmgUPuzK2vNQjVntVcfA0hqaarRK056JMWUZiwSyJlVU_Cm3kOYA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/apartments/1/monthly-bills",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"apartments",
+								"1",
+								"monthly-bills"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Apartment By Code",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc1NDA1MzMyMCwiZXhwIjoxNzU0MTM5NzIwfQ.xK3kRXQC8guvf7pk3DtmQfRiqby9Jfz_-cXmgUPuzK2vNQjVntVcfA0hqaarRK056JMWUZiwSyJlVU_Cm3kOYA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "keyword",
+									"value": "A",
+									"type": "text"
+								},
+								{
+									"key": "page",
+									"value": "0",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "size",
+									"value": "4",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/apartments/search",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"apartments",
+								"search"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "residents",
+			"item": [
+				{
+					"name": "Create Resident",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc1NDA1NTQ4NywiZXhwIjoxNzU0MTQxODg3fQ.HO_269y5vEH0aug_x2kP38TN5dM3TyVIjTbW_1AsFiMCcJSurtlJoPr4id-Nd0u7Gnho8S3EmvD4ftlEHVEAYw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"fullname\": \"Nguyen Van b\",\r\n  \"email\": \"nguyenvanb@example.com\",\r\n  \"phone_number\": \"0123456787\",\r\n  \"identity_number\": \"1234567\",\r\n  \"date_of_birth\": \"1997-05-15\",\r\n  \"is_representative\": true,\r\n  \"gender\": \"FEMALE\",\r\n  \"apartment_id\": 1\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/residents",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"residents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Resident",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc1NDA1NTQ4NywiZXhwIjoxNzU0MTQxODg3fQ.HO_269y5vEH0aug_x2kP38TN5dM3TyVIjTbW_1AsFiMCcJSurtlJoPr4id-Nd0u7Gnho8S3EmvD4ftlEHVEAYw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"fullname\": \"Nguyen Van A\",\r\n  \"email\": \"duybinhh03@gmail.com\",\r\n  \"phone_number\": \"0123456789\",\r\n  \"identity_number\": \"123456789\",\r\n  \"date_of_birth\": \"1990-05-15\",\r\n  \"is_representative\": true,\r\n  \"gender\": \"MALE\",\r\n  \"apartment_id\": 1\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/residents/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"residents",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Resident By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzU0MDU1MTg5LCJleHAiOjE3NTQxNDE1ODl9.V5CMXgM4tJ4K23sEgWYwvxaMC16sPfa4rwwCm49lTRX3rAAjFCSFNulXVSbWky0BDBb0qRJRPD0tPcN1UCwzrw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/residents/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"residents",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Resident By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc1NDA1NTQ4NywiZXhwIjoxNzU0MTQxODg3fQ.HO_269y5vEH0aug_x2kP38TN5dM3TyVIjTbW_1AsFiMCcJSurtlJoPr4id-Nd0u7Gnho8S3EmvD4ftlEHVEAYw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/residents/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"residents",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Residents",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzU0MDU1MTg5LCJleHAiOjE3NTQxNDE1ODl9.V5CMXgM4tJ4K23sEgWYwvxaMC16sPfa4rwwCm49lTRX3rAAjFCSFNulXVSbWky0BDBb0qRJRPD0tPcN1UCwzrw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/residents",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"residents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Resident By Name",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzU0MDU1MTg5LCJleHAiOjE3NTQxNDE1ODl9.V5CMXgM4tJ4K23sEgWYwvxaMC16sPfa4rwwCm49lTRX3rAAjFCSFNulXVSbWky0BDBb0qRJRPD0tPcN1UCwzrw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "C",
+									"type": "text"
+								},
+								{
+									"key": "page",
+									"value": "0",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "size",
+									"value": "4",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/residents/search",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"residents",
+								"search"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "auths",
+			"item": [
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"admin\",\r\n  \"password\": \"admin\",\r\n  \"retype_password\": \"admin\"\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"admin\",\r\n  \"password\": \"admin\"\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Current User",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc1NDA1NzA1NSwiZXhwIjoxNzU0MTQzNDU1fQ.JSv_BET0_i7hARdUmuIYwZVMivXpuv6WAoYXTT0-afcRMuP9m5IRIvJhVy55kJ200ctynDRTrj3aVGFD9IQ3_A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "C",
+									"type": "text"
+								},
+								{
+									"key": "page",
+									"value": "0",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "size",
+									"value": "4",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/auth/current-user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"current-user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "monthlyBills",
+			"item": [
+				{
+					"name": "Create Monthly Bill",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc1NDA1NTQ4NywiZXhwIjoxNzU0MTQxODg3fQ.HO_269y5vEH0aug_x2kP38TN5dM3TyVIjTbW_1AsFiMCcJSurtlJoPr4id-Nd0u7Gnho8S3EmvD4ftlEHVEAYw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"billing_month\": \"2025-10-01\",\r\n  \"electricity_reading\": 100,\r\n  \"water_reading\": 60,\r\n  \"electricity_fee\": 200000.00,\r\n  \"water_fee\": 250000.00,\r\n  \"other_fee\": 10000.00,\r\n  \"is_paid\": false,\r\n  \"apartment_id\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/monthly-bills",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"monthly-bills"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Monthy Bill",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc1NDA1NTQ4NywiZXhwIjoxNzU0MTQxODg3fQ.HO_269y5vEH0aug_x2kP38TN5dM3TyVIjTbW_1AsFiMCcJSurtlJoPr4id-Nd0u7Gnho8S3EmvD4ftlEHVEAYw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"billing_month\": \"2025-07-01\",\r\n  \"electricity_reading\": 100,\r\n  \"water_reading\": 60,\r\n  \"electricity_fee\": 20000.00,\r\n  \"water_fee\": 250000.00,\r\n  \"other_fee\": 0,\r\n  \"is_paid\": false,\r\n  \"apartment_id\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/monthly-bills/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"monthly-bills",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Monthly Bill By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzU0MDU1MTg5LCJleHAiOjE3NTQxNDE1ODl9.V5CMXgM4tJ4K23sEgWYwvxaMC16sPfa4rwwCm49lTRX3rAAjFCSFNulXVSbWky0BDBb0qRJRPD0tPcN1UCwzrw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/monthly-bills/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"monthly-bills",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Monthly Bills",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzU0MDU1MTg5LCJleHAiOjE3NTQxNDE1ODl9.V5CMXgM4tJ4K23sEgWYwvxaMC16sPfa4rwwCm49lTRX3rAAjFCSFNulXVSbWky0BDBb0qRJRPD0tPcN1UCwzrw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/monthly-bills",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"monthly-bills"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send Email To Apartment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzU0MDU1MTg5LCJleHAiOjE3NTQxNDE1ODl9.V5CMXgM4tJ4K23sEgWYwvxaMC16sPfa4rwwCm49lTRX3rAAjFCSFNulXVSbWky0BDBb0qRJRPD0tPcN1UCwzrw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/monthly-bills/1/send-email",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"monthly-bills",
+								"1",
+								"send-email"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Monthly Bill By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc1NDA1NTQ4NywiZXhwIjoxNzU0MTQxODg3fQ.HO_269y5vEH0aug_x2kP38TN5dM3TyVIjTbW_1AsFiMCcJSurtlJoPr4id-Nd0u7Gnho8S3EmvD4ftlEHVEAYw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/monthly-bills/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"monthly-bills",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "http://localhost:8080",
+			"type": "default"
+		}
+	]
+}
