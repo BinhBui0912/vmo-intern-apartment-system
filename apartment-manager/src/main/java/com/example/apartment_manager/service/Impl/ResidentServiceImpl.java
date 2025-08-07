@@ -1,7 +1,6 @@
 package com.example.apartment_manager.service.Impl;
 
 import com.example.apartment_manager.dto.request.ResidentRequest;
-import com.example.apartment_manager.dto.response.ResidentResponse;
 import com.example.apartment_manager.entity.Apartment;
 import com.example.apartment_manager.entity.Resident;
 import com.example.apartment_manager.exception.DataNotFoundException;
@@ -21,20 +20,18 @@ public class ResidentServiceImpl implements ResidentService {
     private final ApartmentRepository apartmentRepository;
 
     @Override
-    public Page<ResidentResponse> getAllResidents(Pageable pageable) {
-        Page<Resident> residents = residentRepository.findAll(pageable);
-        return residents.map(ResidentResponse::fromEntity);
+    public Page<Resident> getAllResidents(Pageable pageable) {
+        return residentRepository.findAll(pageable);
     }
 
     @Override
-    public ResidentResponse getResidentById(Long residentId) {
-        Resident resident = residentRepository.findById(residentId)
+    public Resident getResidentById(Long residentId) {
+        return residentRepository.findById(residentId)
                 .orElseThrow(() ->new DataNotFoundException("Resident not found with id: " + residentId));
-        return ResidentResponse.fromEntity(resident);
     }
 
     @Override
-    public ResidentResponse createResident(ResidentRequest request) {
+    public Resident createResident(ResidentRequest request) {
         Apartment existingApartment = apartmentRepository.findById(request.getApartmentId())
                 .orElseThrow(() -> new DataNotFoundException("Apartment not found with id: " + request.getApartmentId()));
         if (residentRepository.existsByEmail(request.getEmail())) {
@@ -58,12 +55,11 @@ public class ResidentServiceImpl implements ResidentService {
                 .isRepresentative(!hasRepresentative)
                 .apartment(existingApartment)
                 .build();
-        Resident savedResident = residentRepository.save(resident);
-        return ResidentResponse.fromEntity(savedResident);
+        return residentRepository.save(resident);
     }
 
     @Override
-    public ResidentResponse updateResident(Long residentId, ResidentRequest request) {
+    public Resident updateResident(Long residentId, ResidentRequest request) {
         Apartment existingApartment = apartmentRepository.findById(request.getApartmentId())
                 .orElseThrow(() -> new DataNotFoundException("Apartment not found with id: " + request.getApartmentId()));
         Resident existingResident = residentRepository.findById(residentId)
@@ -91,8 +87,7 @@ public class ResidentServiceImpl implements ResidentService {
         else{
             existingResident.setIsRepresentative(false);
         }
-        Resident updatedResident = residentRepository.save(existingResident);
-        return ResidentResponse.fromEntity(updatedResident);
+        return residentRepository.save(existingResident);
     }
 
     @Override
@@ -103,12 +98,12 @@ public class ResidentServiceImpl implements ResidentService {
     }
 
     @Override
-    public Page<ResidentResponse> searchResidentsByName(String name, Pageable pageable) {
+    public Page<Resident> searchResidentsByName(String name, Pageable pageable) {
         if(name != null && !name.isBlank()){
             Specification<Resident> spec = (root, query, cb) -> cb.conjunction();
             spec = spec.and(((root, query, cb) ->
                     cb.like(cb.lower(root.get("fullName")), "%" + name.toLowerCase() + "%")));
-            return residentRepository.findAll(spec, pageable).map(ResidentResponse::fromEntity);
+            return residentRepository.findAll(spec, pageable);
         }
         else{
             return Page.empty(pageable);

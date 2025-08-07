@@ -4,14 +4,13 @@ import com.example.apartment_manager.dto.response.CommonResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.validation.FieldError;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.List;
-import java.util.Objects;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -38,6 +37,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<CommonResponse<?>> handleIllegalArgument(IllegalArgumentException ex) {
         return new ResponseEntity<>(new CommonResponse<>(400, ex.getMessage(), null), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<CommonResponse<?>> handleAccessDenied(AccessDeniedException ex) {
+        return new ResponseEntity<>(new CommonResponse<>(403, ex.getMessage(), null), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(Exception.class)

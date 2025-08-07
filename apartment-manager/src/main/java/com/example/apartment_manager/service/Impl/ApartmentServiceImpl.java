@@ -29,13 +29,12 @@ public class ApartmentServiceImpl implements ApartmentService {
     private final MonthlyBillRepository monthlyBillRepository;
 
     @Override
-    public Page<ApartmentResponse> getAllApartments(Pageable pageable) {
-        Page<Apartment> apartments = apartmentRepository.findAll(pageable);
-        return apartments.map(ApartmentResponse::fromEntity);
+    public Page<Apartment> getAllApartments(Pageable pageable) {
+        return apartmentRepository.findAll(pageable);
     }
 
     @Override
-    public ApartmentResponse createApartment(ApartmentRequest request) {
+    public Apartment createApartment(ApartmentRequest request) {
         if(apartmentRepository.existsByCode(request.getCode())) {
             throw new IllegalArgumentException("Code already exist " + request.getCode());
         }
@@ -46,19 +45,17 @@ public class ApartmentServiceImpl implements ApartmentService {
                 .numberOfRooms(request.getNumberOfRooms())
                 .description(request.getDescription())
                 .build();
-        Apartment savedApartment = apartmentRepository.save(newApartment);
-        return ApartmentResponse.fromEntity(savedApartment);
+        return apartmentRepository.save(newApartment);
     }
 
     @Override
-    public ApartmentResponse getApartmentById(Long apartmentId) {
-        Apartment apartment = apartmentRepository.findById(apartmentId)
+    public Apartment getApartmentById(Long apartmentId) {
+        return apartmentRepository.findById(apartmentId)
                 .orElseThrow(() -> new DataNotFoundException("Apartment not found with id: " + apartmentId));
-        return ApartmentResponse.fromEntity(apartment);
     }
 
     @Override
-    public ApartmentResponse updateApartment(Long apartmentId, ApartmentRequest request) {
+    public Apartment updateApartment(Long apartmentId, ApartmentRequest request) {
         Apartment existingApartment = apartmentRepository.findById(apartmentId)
                 .orElseThrow(() -> new DataNotFoundException("Apartment not found with id: " + apartmentId));
         existingApartment.setCode(request.getCode());
@@ -66,8 +63,7 @@ public class ApartmentServiceImpl implements ApartmentService {
         existingApartment.setFloor(request.getFloor());
         existingApartment.setNumberOfRooms(request.getNumberOfRooms());
         existingApartment.setDescription(request.getDescription());
-        Apartment updatedApartment = apartmentRepository.save(existingApartment);
-        return ApartmentResponse.fromEntity(updatedApartment);
+        return apartmentRepository.save(existingApartment);
     }
 
     @Override
@@ -78,33 +74,26 @@ public class ApartmentServiceImpl implements ApartmentService {
     }
 
     @Override
-    public List<ResidentResponse> getResidentsByApartmentId(Long apartmentId) {
+    public List<Resident> getResidentsByApartmentId(Long apartmentId) {
         Apartment existingApartment = apartmentRepository.findById(apartmentId)
                 .orElseThrow(() -> new DataNotFoundException("Apartment not found with id: " + apartmentId));
-        List<Resident> residents = residentRepository.findByApartment(existingApartment);
-        return residents.stream()
-                .map(ResidentResponse::fromEntity)
-                .collect(Collectors.toList());
+        return residentRepository.findByApartment(existingApartment);
     }
 
     @Override
-    public List<MonthlyBillResponse> getMonthlyBillsByApartmentId(Long apartmentId) {
+    public List<MonthlyBill> getMonthlyBillsByApartmentId(Long apartmentId) {
         Apartment existingApartment = apartmentRepository.findById(apartmentId)
                 .orElseThrow(() -> new DataNotFoundException("Apartment not found with id: " + apartmentId));
-        List<MonthlyBill> monthlyBills = monthlyBillRepository.findByApartment(existingApartment);
-        return monthlyBills.stream()
-                .map(MonthlyBillResponse::fromEntity)
-                .collect(Collectors.toList());
+        return monthlyBillRepository.findByApartment(existingApartment);
     }
 
     @Override
-    public Page<ApartmentResponse> searchApartmentsByCode(String keyword, Pageable pageable) {
+    public Page<Apartment> searchApartmentsByCode(String keyword, Pageable pageable) {
         Specification<Apartment> spec = (root, query, cb) -> cb.conjunction();
         if(keyword != null && !keyword.isBlank()) {
             spec = spec.and(((root, query, cb) ->
                     cb.like(cb.lower(root.get("code")), "%" + keyword.toLowerCase() + "%")));
         }
-        Page<Apartment> apartments = apartmentRepository.findAll(spec, pageable);
-        return apartments.map(ApartmentResponse::fromEntity);
+        return apartmentRepository.findAll(spec, pageable);
     }
 }

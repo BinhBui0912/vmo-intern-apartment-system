@@ -1,0 +1,574 @@
+openapi: 3.0.3
+info:
+  title: Apartment Manager API
+  description: API for managing residents in the apartment management system
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Development server
+
+tags:
+  - name: Residents
+    description: Resident management operations
+
+paths:
+  /residents:
+    get:
+      tags:
+        - Residents
+      summary: Get all residents
+      description: |
+        **Required Role:** USER or ADMIN
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+          example: 0
+        - name: size
+          in: query
+          description: Number of items per page
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 100
+          example: 10
+      responses:
+        '200':
+          description: Get all residents successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResidentListResponse'
+              example:
+                code: 200
+                message: "Get all residents"
+                data:
+                  - id: 1
+                    fullName: "Duy Binh"
+                    email: "binh@gmail.com"
+                    phoneNumber: "0123456789"
+                    identityNumber: "ID123456789"
+                    gender: "MALE"
+                    dateOfBirth: "2003-01-01"
+                    isRepresentative: false
+                    isActive: true
+                    apartmentId: 1
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        - bearerAuth: []
+
+    post:
+      tags:
+        - Residents
+      summary: Create new resident
+      description: |
+        **Required Role:** ADMIN
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResidentRequest'
+            example:
+              fullname: "Duy Binh"
+              email: "binh@gmail.com"
+              phone_number: "0123456789"
+              identity_number: "ID123456789"
+              date_of_birth: "2003-01-01"
+              is_representative: false
+              gender: "MALE"
+              apartment_id: 1
+      responses:
+        '201':
+          description: Resident created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResidentResponse'
+              example:
+                code: 201
+                message: "Resident created successfully"
+                data:
+                  id: 1
+                  fullName: "Duy Binh"
+                  email: "binh@gmail.com"
+                  phoneNumber: "0123456789"
+                  identityNumber: "ID123456789"
+                  gender: "MALE"
+                  dateOfBirth: "2003-01-01"
+                  isRepresentative: false
+                  isActive: true
+                  apartmentId: 1
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        - bearerAuth: []
+
+  /residents/{id}:
+    get:
+      tags:
+        - Residents
+      summary: Get resident by ID
+      description: |
+        **Required Role:** USER or ADMIN
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Resident ID
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          description: Resident found successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResidentResponse'
+              example:
+                code: 200
+                message: "Get Resident by ID: 1 successfully"
+                data:
+                  id: 1
+                  fullName: "Duy Binh"
+                  email: "binh@gmail.com"
+                  phoneNumber: "0123456789"
+                  identityNumber: "ID123456789"
+                  gender: "MALE"
+                  dateOfBirth: "2003-01-01"
+                  isRepresentative: false
+                  isActive: true
+                  apartmentId: 1
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        - bearerAuth: []
+
+    put:
+      tags:
+        - Residents
+      summary: Update resident
+      description: |
+        **Required Role:** ADMIN
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Resident ID to update
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResidentRequest'
+            example:
+              fullname: "Binh Bui"
+              email: "binh@gmail.com"
+              phone_number: "0987654321"
+              identity_number: "ID123456789"
+              date_of_birth: "2003-01-01"
+              is_representative: true
+              gender: "MALE"
+              apartment_id: 1
+      responses:
+        '200':
+          description: Resident updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResidentResponse'
+              example:
+                code: 200
+                message: "Resident updated successfully"
+                data:
+                  id: 1
+                  fullName: "Binh Bui"
+                  email: "binh@gmail.com"
+                  phoneNumber: "0987654321"
+                  identityNumber: "ID123456789"
+                  gender: "MALE"
+                  dateOfBirth: "2003-01-01"
+                  isRepresentative: true
+                  isActive: true
+                  apartmentId: 1
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        - bearerAuth: []
+
+    delete:
+      tags:
+        - Residents
+      summary: Delete resident
+      description: |
+        **Required Role:** ADMIN
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Resident ID to delete
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          description: Resident deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResponse'
+              example:
+                code: 200
+                message: "Resident deleted successfully"
+                data: null
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        - bearerAuth: []
+
+  /residents/search:
+    get:
+      tags:
+        - Residents
+      summary: Search residents by name
+      description: |
+        **Required Role:** USER or ADMIN
+      parameters:
+        - name: name
+          in: query
+          description: Name to search for (partial matching)
+          required: false
+          schema:
+            type: string
+            default: ""
+          example: "Binh"
+        - name: page
+          in: query
+          description: Page number (0-based)
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+          example: 0
+        - name: size
+          in: query
+          description: Number of items per page
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 100
+          example: 10
+      responses:
+        '200':
+          description: Search completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResidentListResponse'
+              example:
+                code: 200
+                message: "Search Residents By Name: Binh successfully"
+                data:
+                  - id: 1
+                    fullName: "Duy Binh"
+                    email: "binh@gmail.com"
+                    phoneNumber: "0123456789"
+                    identityNumber: "ID123456789"
+                    gender: "MALE"
+                    dateOfBirth: "2003-01-01"
+                    isRepresentative: false
+                    isActive: true
+                    apartmentId: 1
+                  - id: 2
+                    fullName: "Binh Bui"
+                    email: "binh.bui@example.com"
+                    phoneNumber: "0987654321"
+                    identityNumber: "ID987654321"
+                    gender: "MALE"
+                    dateOfBirth: "2003-06-15"
+                    isRepresentative: true
+                    isActive: true
+                    apartmentId: 2
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        JWT Bearer token authentication. Include the token in the Authorization header:
+        ```
+        Authorization: Bearer <your-jwt-token>
+        ```
+
+  schemas:
+    ResidentRequest:
+      type: object
+      required:
+        - fullname
+        - email
+        - phone_number
+        - date_of_birth
+        - is_representative
+        - identity_number
+        - apartment_id
+      properties:
+        fullname:
+          type: string
+          description: Full name of the resident
+          example: "Duy Binh"
+          minLength: 1
+          maxLength: 100
+        email:
+          type: string
+          format: email
+          description: Email address (must be valid email format)
+          example: "binh@gmail.com"
+        phone_number:
+          type: string
+          description: Phone number
+          example: "0123456789"
+          pattern: "^[0-9]{10,15}$"
+        date_of_birth:
+          type: string
+          format: date
+          description: Date of birth (must be in the past)
+          example: "2003-01-01"
+        identity_number:
+          type: string
+          description: Identity/ID card number
+          example: "ID123456789"
+          minLength: 1
+          maxLength: 20
+        is_representative:
+          type: boolean
+          description: Whether this resident is the apartment representative
+          example: false
+          default: false
+        gender:
+          type: string
+          enum: [MALE, FEMALE]
+          description: Gender of the resident
+          example: "MALE"
+        apartment_id:
+          type: integer
+          format: int64
+          description: ID of the apartment this resident belongs to
+          example: 1
+          minimum: 1
+
+    ResidentResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: HTTP status code
+          example: 200
+        message:
+          type: string
+          description: Response message
+          example: "Success"
+        data:
+          $ref: '#/components/schemas/Resident'
+    ResidentListResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: HTTP status code
+          example: 200
+        message:
+          type: string
+          description: Response message
+          example: "Get all residents"
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Resident'
+
+    DeleteResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: HTTP status code
+          example: 200
+        message:
+          type: string
+          description: Response message
+          example: "Resident deleted successfully"
+        
+
+    Resident:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier for the resident
+          example: 1
+        fullName:
+          type: string
+          description: Full name of the resident
+          example: "Duy Binh"
+        email:
+          type: string
+          format: email
+          description: Email address
+          example: "binh@gmail.com"
+        phoneNumber:
+          type: string
+          description: Phone number
+          example: "0123456789"
+        identityNumber:
+          type: string
+          description: Identity/ID card number
+          example: "ID123456789"
+        gender:
+          type: string
+          enum: [MALE, FEMALE]
+          description: Gender
+          example: "MALE"
+        dateOfBirth:
+          type: string
+          format: date
+          description: Date of birth
+          example: "2003-01-01"
+        isRepresentative:
+          type: boolean
+          description: Whether this resident is the apartment representative
+          example: false
+        isActive:
+          type: boolean
+          description: Whether this resident account is active
+          example: true
+        apartmentId:
+          type: integer
+          format: int64
+          description: ID of the apartment this resident belongs to
+          example: 1
+
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: HTTP status code
+          example: 400
+        message:
+          type: string
+          description: Error message
+          example: "Validation failed"
+        data:
+          type: object
+          nullable: true
+          description: Additional error details (if any)
+
+    ValidationErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: HTTP status code
+          example: 400
+        message:
+          type: string
+          description: Validation error message
+          example: "Validation failed for argument [0] in public org.springframework.http.ResponseEntity..."
+        data:
+          type: object
+          nullable: true
+          description: Validation error details
+          example:
+            errors:
+              - field: "fullname"
+                message: "Full name cannot be empty"
+              - field: "email"
+                message: "Email must be valid"
+
+  responses:
+    BadRequest:
+      description: Bad request - Invalid parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: 400
+            message: "Invalid request parameters"
+            data: null
+
+    ValidationError:
+      description: Validation error - Invalid input data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationErrorResponse'
+          example:
+            code: 400
+            message: "Validation failed"
+            data:
+              errors:
+                - field: "fullname"
+                  message: "Full name cannot be empty"
+                - field: "email"
+                  message: "Email must be valid"
+
+    Unauthorized:
+      description: Unauthorized - Invalid or missing authentication token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: 401
+            message: "Unauthorized: Missing or invalid token"
+            data: null
+
+    NotFound:
+      description: Not found - Resident does not exist
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: 404
+            message: "Resident not found with ID: 999"
+            data: null

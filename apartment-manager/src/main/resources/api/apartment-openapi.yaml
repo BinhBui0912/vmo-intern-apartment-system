@@ -1,0 +1,721 @@
+openapi: 3.0.3
+info:
+  title: Apartment Manager API - Apartment Controller
+  description: API for managing apartments in the apartment management system
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Development server
+
+tags:
+  - name: apartments
+    description: Apartment management operations
+
+paths:
+  /apartments:
+    get:
+      tags:
+        - apartments
+      summary: Get all apartments with pagination
+      description: |
+        **Required Role:** USER or ADMIN
+      parameters:
+        - name: page
+          in: query
+          description: Page number (0-based)
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - name: size
+          in: query
+          description: Number of items per page
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 100
+      responses:
+        '200':
+          description: Get All Apartments successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApartmentListResponse'
+              example:
+                code: 200
+                message: "Get all apartments"
+                data:
+                  - id: 1
+                    code: "A101"
+                    area: 100.5
+                    floor: 1
+                    numberOfRooms: 3
+                    description: "Beautiful apartment with city view"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        - bearerAuth: []
+
+    post:
+      tags:
+        - apartments
+      summary: Create a new apartment
+      description: |
+        **Required Role:** ADMIN
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApartmentRequest'
+            example:
+              code: "A102"
+              floor: 2
+              area: 85.0
+              numberOfRooms: 2
+              description: "Spacious apartment with balcony"
+      responses:
+        '201':
+          description: Apartment created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApartmentResponse'
+              example:
+                code: 201
+                message: "Apartment created successfully"
+                data:
+                  id: 2
+                  code: "A102"
+                  area: 85.0
+                  floor: 2
+                  numberOfRooms: 2
+                  description: "Spacious apartment with balcony"
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        - bearerAuth: []
+
+  /apartments/{id}:
+    get:
+      tags:
+        - apartments
+      summary: Get apartment by ID
+      description: |
+        **Required Role:** USER or ADMIN
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Apartment ID
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: apartment found successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApartmentResponse'
+              example:
+                code: 200
+                message: "Get apartment by ID: 1 successfully"
+                data:
+                  id: 1
+                  code: "A101"
+                  area: 100.5
+                  floor: 1
+                  numberOfRooms: 3
+                  description: "Beautiful apartment with city view"
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        - bearerAuth: []
+
+    put:
+      tags:
+        - apartments
+      summary: Update apartment
+      description: |
+        **Required Role:** ADMIN
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Apartment ID
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApartmentRequest'
+            example:
+              code: "A101"
+              floor: 1
+              area: 100.5
+              numberOfRooms: 3
+              description: "Updated apartment with new features"
+      responses:
+        '200':
+          description: Apartment updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApartmentResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        - bearerAuth: []
+
+    delete:
+      tags:
+        - apartments
+      summary: Delete apartment
+      description: |
+        **Required Role:** ADMIN
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Apartment ID
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          description: Apartment deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResponse'
+              example:
+                code: 200
+                message: "Apartment deleted successfully"
+                data: null
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        - bearerAuth: []
+
+  /apartments/search:
+    get:
+      tags:
+        - apartments
+      summary: Search apartments
+      description: |
+        **Required Role:** USER or ADMIN
+      parameters:
+        - name: code
+          in: query
+          required: true
+          description: Apartment code to search for
+          schema:
+            type: string
+            minLength: 1
+          example: "101"
+        - name: page
+          in: query
+          description: Page number (0-based)
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - name: size
+          in: query
+          description: Number of items per page
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 100
+      responses:
+        '200':
+          description: Search completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApartmentListResponse'
+              example:
+                code: 200
+                message: "Search apartments by code"
+                data:
+                  - id: 1
+                    code: "A101"
+                    area: 100.5
+                    floor: 1
+                    numberOfRooms: 3
+                    description: "Beautiful apartment with city view"
+                  - id: 2
+                    code: "B101"
+                    area: 80.0
+                    floor: 2
+                    numberOfRooms: 2
+                    description: "Cozy apartment with modern amenities"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        - bearerAuth: []
+
+  /apartments/{id}/residents:
+    get:
+      tags:
+        - apartments
+      summary: Get residents by apartment ID
+      description: |
+        **Required Role:** USER or ADMIN
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Apartment ID
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          description: Get Residents by ApartmentId successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResidentListResponse'
+              example:
+                code: 200
+                message: "Get Residents by ApartmentId: 1 successfully"
+                data:
+                  - id: 1
+                    fullName: "Duy Binh"
+                    email: "binh@gmail.com"
+                    phoneNumber: "0123456789"
+                    identityNumber: "ID123456789"
+                    gender: "MALE"
+                    dateOfBirth: "2003-01-01"
+                    isRepresentative: false
+                    isActive: true
+                    apartmentId: 1
+                  - id: 2
+                    fullName: "Binh Bui"
+                    email: "binh.bui@example.com"
+                    phoneNumber: "0987654321"
+                    identityNumber: "ID987654321"
+                    gender: "MALE"
+                    dateOfBirth: "2003-06-15"
+                    isRepresentative: true
+                    isActive: true
+                    apartmentId: 1
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        - bearerAuth: []
+
+  /apartments/{id}/monthly-bills:
+    get:
+      tags:
+        - apartments
+      summary: Get monthly bills by apartment ID
+      description: |
+        **Required Role:** USER or ADMIN
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Apartment ID
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          description: Successfully retrieved monthly bills
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonthlyBillListResponse'
+              example:
+                code: 200
+                message: "Get Monthly Bills by ApartmentId: 1 successfully"
+                data:
+                  - id: 1
+                    billingMonth: "2024-01-01"
+                    electricityReading: 250
+                    waterReading: 15
+                    electricityFee: 300000
+                    waterFee: 150000
+                    otherFee: 200000
+                    totalAmount: 650000
+                    dueDate: "2024-01-10"
+                    isPaid: false
+                    apartmentId: 1
+                  - id: 2
+                    billingMonth: "2024-02-01"
+                    electricityReading: 260
+                    waterReading: 16
+                    electricityFee: 320000
+                    waterFee: 160000
+                    otherFee: 210000
+                    totalAmount: 690000
+                    dueDate: "2024-02-10"
+                    isPaid: true
+                    apartmentId: 1
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT Authentication token
+
+  schemas:
+    ApartmentRequest:
+      type: object
+      required:
+        - code
+        - floor
+        - area
+        - numberOfRooms
+        - description
+      properties:
+        code:
+          type: string
+          description: Unique apartment code
+          example: "A101"
+          minLength: 1
+          maxLength: 10
+        floor:
+          type: integer
+          description: Floor number where the apartment is located
+          example: 1
+          minimum: 1
+        area:
+          type: number
+          format: double
+          description: Apartment area in square meters
+          example: 75.5
+          minimum: 0
+        numberOfRooms:
+          type: integer
+          description: Number of rooms in the apartment
+          example: 2
+          minimum: 1
+        description:
+          type: string
+          description: Additional description of the apartment
+          example: "Modern apartment with city view"
+          maxLength: 500
+
+    ApartmentResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique apartment ID
+          example: 1
+        code:
+          type: string
+          description: Unique apartment code
+          example: "A101"
+        floor:
+          type: integer
+          description: Floor number where the apartment is located
+          example: 1
+        area:
+          type: number
+          format: double
+          description: Apartment area in square meters
+          example: 75.5
+        numberOfRooms:
+          type: integer
+          description: Number of rooms in the apartment
+          example: 2
+        description:
+          type: string
+          description: Additional description of the apartment
+          example: "Modern apartment with city view"
+
+    ApartmentListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        message:
+          type: string
+          description: Response message
+          example: "Get all apartments"
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApartmentResponse'
+
+    MonthlyBillResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique monthly bill ID
+          example: 1
+        billingMonth:
+          type: string
+          format: date
+          description: The month for which this bill is generated
+          example: "2024-01-01"
+        electricityReading:
+          type: integer
+          description: Electricity meter reading
+          example: 250
+        waterReading:
+          type: integer
+          description: Water meter reading
+          example: 15
+        electricityFee:
+          type: number
+          format: decimal
+          description: Electricity fee amount
+          example: 300000
+        waterFee:
+          type: number
+          format: decimal
+          description: Water fee amount
+          example: 150000
+        otherFee:
+          type: number
+          format: decimal
+          description: Other fees (maintenance, etc.)
+          example: 200000
+        totalAmount:
+          type: number
+          format: decimal
+          description: Total amount due
+          example: 650000
+        dueDate:
+          type: string
+          format: date
+          description: Payment due date
+          example: "2024-01-15"
+        isPaid:
+          type: boolean
+          description: Whether the bill has been paid
+          example: false
+        apartmentId:
+          type: integer
+          format: int64
+          description: ID of the apartment this bill belongs to
+          example: 1
+
+    MonthlyBillListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        message:
+          type: string
+          description: Response message
+          example: "Monthly bills retrieved successfully"
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/MonthlyBillResponse'
+    
+    ResidentListResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: HTTP status code
+          example: 200
+        message:
+          type: string
+          description: Response message
+          example: "Get all residents"
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Resident'
+    
+    Resident:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier for the resident
+          example: 1
+        fullName:
+          type: string
+          description: Full name of the resident
+          example: "Duy Binh"
+        email:
+          type: string
+          format: email
+          description: Email address
+          example: "binh@gmail.com"
+        phoneNumber:
+          type: string
+          description: Phone number
+          example: "0123456789"
+        identityNumber:
+          type: string
+          description: Identity/ID card number
+          example: "ID123456789"
+        gender:
+          type: string
+          enum: [MALE, FEMALE]
+          description: Gender
+          example: "MALE"
+        dateOfBirth:
+          type: string
+          format: date
+          description: Date of birth
+          example: "2003-01-01"
+        isRepresentative:
+          type: boolean
+          description: Whether this resident is the apartment representative
+          example: false
+        isActive:
+          type: boolean
+          description: Whether this resident account is active
+          example: true
+        apartmentId:
+          type: integer
+          format: int64
+          description: ID of the apartment this resident belongs to
+          example: 1
+    
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: HTTP status code
+          example: 400
+        message:
+          type: string
+          description: Error message
+          example: "Validation failed"
+        data:
+          type: object
+          nullable: true
+          description: Additional error details (if any)
+
+    DeleteResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: HTTP status code
+          example: 200
+        message:
+          type: string
+          description: Response message
+          example: "Resident deleted successfully"
+    
+    ValidationErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: HTTP status code
+          example: 400
+        message:
+          type: string
+          description: Validation error message
+          example: "Validation failed for argument [0] in public org.springframework.http.ResponseEntity..."
+        data:
+          type: object
+          nullable: true
+          description: Validation error details
+          example:
+            errors:
+              - field: "code"
+                message: "Apartment's code cannot be empty"
+              - field: "numberOfRooms"
+                message: "Number of rooms can't be null"
+  
+  responses:
+    BadRequest:
+      description: Bad request - Invalid parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: 400
+            message: "Invalid request parameters"
+            data: null
+
+    ValidationError:
+      description: Validation error - Invalid input data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationErrorResponse'
+          example:
+            code: 400
+            message: "Validation failed"
+            data:
+              errors:
+                - field: "fullname"
+                  message: "Full name cannot be empty"
+                - field: "email"
+                  message: "Email must be valid"
+
+    Unauthorized:
+      description: Unauthorized - Invalid or missing authentication token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: 401
+            message: "Unauthorized: Missing or invalid token"
+            data: null
+
+    NotFound:
+      description: Not found - Resident does not exist
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: 404
+            message: "Resident not found with ID: 999"
+            data: null

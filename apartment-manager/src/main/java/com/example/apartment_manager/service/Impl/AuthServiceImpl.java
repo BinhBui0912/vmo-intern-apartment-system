@@ -67,6 +67,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private UserResponse getUserResponse(CustomUserDetails principal) {
+        System.out.println(principal);
         return userService.findByUsername(principal.getUsername())
                 .map(UserResponse::fromEntity)
                 .orElseGet(UserResponse::new);

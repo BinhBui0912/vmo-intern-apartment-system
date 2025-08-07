@@ -1,0 +1,368 @@
+openapi: 3.0.3
+info:
+  title: Apartment Manager API - Authentication Controller
+  description: API for user authentication and authorization in the apartment management system
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Development server
+
+tags:
+  - name: authentication
+    description: User authentication and authorization operations
+
+paths:
+  /auth/login:
+    post:
+      tags:
+        - authentication
+      summary: User login
+      description: |
+        Authenticate user with username and password to receive JWT token.
+
+        **Note:** This endpoint does NOT require authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+            example:
+              username: "admin"
+              password: "password123"
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+              example:
+                code: 200
+                message: "Login successfully!"
+                data: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTYzOTc0NzIwMCwiZXhwIjoxNjM5ODMzNjAwfQ.signature"
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 401
+                message: "Invalid username or password"
+                data: null
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                message: "Authentication service error"
+                data: null
+
+  /auth/register:
+    post:
+      tags:
+        - authentication
+      summary: User registration
+      description: |
+        Register a new user account in the system.
+        
+        **Note:** This endpoint does NOT require authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+            example:
+              username: "newuser"
+              password: "password123"
+              retype_password: "password123"
+      responses:
+        '201':
+          description: Registration successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+              example:
+                code: 201
+                message: "User registered successfully"
+                data: null
+        '400':
+          description: Invalid registration data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+              example:
+                code: 400
+                message: "Username already exists"
+                data: null
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                message: "Registration service error"
+                data: null
+
+  /auth/current-user:
+    get:
+      tags:
+        - authentication
+      summary: Get current authenticated user
+      description: |
+        Retrieve information about the currently authenticated user.
+        
+        **Required:** Valid JWT token in Authorization header
+      responses:
+        '200':
+          description: User information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfoResponse'
+              example:
+                code: 200
+                message: "User retrieved successfully!"
+                data:
+                  username: "admin"
+                  createdAt: "2024-01-01T10:00:00"
+                  updatedAt: "2024-01-15T14:30:00"
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 401
+                message: "JWT token is invalid or expired"
+                data: null
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                message: "User service error"
+                data: null
+      security:
+        - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT Authentication token
+
+  schemas:
+    AuthRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          description: Username for authentication
+          example: "admin"
+          minLength: 3
+          maxLength: 50
+        password:
+          type: string
+          format: password
+          description: User password
+          example: "password123"
+          minLength: 6
+          maxLength: 100
+
+    RegisterRequest:
+      type: object
+      required:
+        - username
+        - password
+        - retype_password
+      properties:
+        username:
+          type: string
+          description: Desired username (must be unique)
+          example: "newuser"
+          minLength: 3
+          maxLength: 50
+          pattern: "^[a-zA-Z0-9_]+$"
+        password:
+          type: string
+          format: password
+          description: User password
+          example: "password123"
+          minLength: 6
+          maxLength: 100
+        retype_password:
+          type: string
+          format: password
+          description: Password confirmation (must match password)
+          example: "password123"
+          minLength: 6
+          maxLength: 100
+
+    LoginResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: HTTP status code
+          example: 200
+        message:
+          type: string
+          description: Response message
+          example: "Login successfully!"
+        data:
+          type: string
+          description: JWT authentication token
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTYzOTc0NzIwMCwiZXhwIjoxNjM5ODMzNjAwfQ.signature"
+
+    RegisterResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: HTTP status code
+          example: 201
+        message:
+          type: string
+          description: Response message
+          example: "User registered successfully"
+
+    UserInfoResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: HTTP status code
+          example: 200
+        message:
+          type: string
+          description: Response message
+          example: "User retrieved successfully!"
+        data:
+          $ref: '#/components/schemas/UserInfo'
+
+    UserInfo:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Username of the authenticated user
+          example: "admin"
+        createdAt:
+          type: string
+          format: date-time
+          description: Account creation timestamp
+          example: "2024-01-01T10:00:00"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Account last update timestamp
+          example: "2024-01-15T14:30:00"
+
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: HTTP status code
+          example: 400
+        message:
+          type: string
+          description: Error message
+          example: "Authentication failed"
+        data:
+          type: object
+          nullable: true
+          description: Additional error details (if any)
+          example: null
+
+    ValidationErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: HTTP status code
+          example: 422
+        message:
+          type: string
+          description: Validation error message
+          example: "Validation failed"
+        data:
+          type: object
+          nullable: true
+          description: Validation error details
+          example:
+            errors:
+              - field: "username"
+                message: "Username is required"
+              - field: "password"
+                message: "Password cannot be blank"
+
+  responses:
+    BadRequest:
+      description: Bad request - Invalid input data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: 400
+            message: "Invalid request data"
+            data: null
+
+    Unauthorized:
+      description: Unauthorized - Authentication failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: 401
+            message: "Invalid credentials or missing token"
+            data: null
+
+    ValidationError:
+      description: Validation error - Invalid input format
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationErrorResponse'
+          example:
+            code: 422
+            message: "Validation failed"
+            data:
+              errors:
+                - field: "username"
+                  message: "Username is required"
+                - field: "password"
+                  message: "Password must be at least 6 characters"
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: 500
+            message: "Internal server error occurred"
+            data: null

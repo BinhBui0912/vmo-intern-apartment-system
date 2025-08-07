@@ -25,20 +25,18 @@ public class MonthlyBillServiceImpl implements MonthlyBillService {
     private final EmailService emailService;
 
     @Override
-    public Page<MonthlyBillResponse> getAllMonthlyBills(Pageable pageable) {
-        Page<MonthlyBill> monthlyBills = monthlyBillRepository.findAll(pageable);
-        return monthlyBills.map(MonthlyBillResponse::fromEntity);
+    public Page<MonthlyBill> getAllMonthlyBills(Pageable pageable) {
+        return monthlyBillRepository.findAll(pageable);
     }
 
     @Override
-    public MonthlyBillResponse getMonthlyBillById(Long monthlyBillId) {
-        MonthlyBill monthlyBill = monthlyBillRepository.findById(monthlyBillId)
+    public MonthlyBill getMonthlyBillById(Long monthlyBillId) {
+        return monthlyBillRepository.findById(monthlyBillId)
                 .orElseThrow(() -> new DataNotFoundException("Monthly Bill not found with id: " + monthlyBillId));
-        return MonthlyBillResponse.fromEntity(monthlyBill);
     }
 
     @Override
-    public MonthlyBillResponse createMonthlyBill(MonthlyBillRequest request) {
+    public MonthlyBill createMonthlyBill(MonthlyBillRequest request) {
         Apartment existingApartment = apartmentRepository.findById(request.getApartmentId())
                 .orElseThrow(() -> new DataNotFoundException("Apartment not found with id: " + request.getApartmentId()));
         if (monthlyBillRepository.existsByApartmentIdAndBillingMonth(request.getApartmentId(), request.getBillingMonth())) {
@@ -58,12 +56,11 @@ public class MonthlyBillServiceImpl implements MonthlyBillService {
                         .add(request.getOtherFee()))
                 .apartment(existingApartment)
                 .build();
-        MonthlyBill savedMonthlyBill = monthlyBillRepository.save(monthlyBill);
-        return MonthlyBillResponse.fromEntity(savedMonthlyBill);
+        return monthlyBillRepository.save(monthlyBill);
     }
 
     @Override
-    public MonthlyBillResponse updateMonthlyBill(Long monthlyBillId, MonthlyBillRequest request) {
+    public MonthlyBill updateMonthlyBill(Long monthlyBillId, MonthlyBillRequest request) {
         Apartment existingApartment = apartmentRepository.findById(request.getApartmentId())
                 .orElseThrow(() -> new DataNotFoundException("Apartment not found with id: " + request.getApartmentId()));
         MonthlyBill existingMonthlyBill = monthlyBillRepository.findById(monthlyBillId)
@@ -85,8 +82,7 @@ public class MonthlyBillServiceImpl implements MonthlyBillService {
         existingMonthlyBill.setTotalAmount(request.getElectricityFee()
                                         .add(request.getWaterFee()
                                         .add(request.getOtherFee())));
-        MonthlyBill savedMonthlyBill = monthlyBillRepository.save(existingMonthlyBill);
-        return MonthlyBillResponse.fromEntity(savedMonthlyBill);
+        return monthlyBillRepository.save(existingMonthlyBill);
     }
 
     @Override

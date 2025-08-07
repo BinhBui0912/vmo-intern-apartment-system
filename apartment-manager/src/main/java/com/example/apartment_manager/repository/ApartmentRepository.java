@@ -9,6 +9,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import java.util.List;
 
 public interface ApartmentRepository extends JpaRepository<Apartment, Long>, JpaSpecificationExecutor<Apartment> {
-    Page<Apartment> findByCodeContainingIgnoreCase(String keyword, Pageable pageable);
     Boolean existsByCode(String code);
 }

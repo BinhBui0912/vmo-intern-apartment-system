@@ -1,0 +1,595 @@
+openapi: 3.0.3
+info:
+  title: Apartment Manager API - Monthly Bill Controller
+  description: API for managing monthly bills in the apartment management system
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Development server
+
+tags:
+  - name: monthly-bills
+    description: Monthly bill management operations
+
+paths:
+  /monthly-bills:
+    get:
+      tags:
+        - monthly-bills
+      summary: Get all monthly bills with pagination
+      description: |
+        **Required Role:** USER or ADMIN
+      parameters:
+        - name: page
+          in: query
+          description: Page number (0-based)
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+          example: 0
+        - name: size
+          in: query
+          description: Number of items per page
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 100
+          example: 10
+      responses:
+        '200':
+          description: Get all monthly bills successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonthlyBillListResponse'
+              example:
+                code: 200
+                message: "Get all monthly bills"
+                data:
+                  - id: 1
+                    billingMonth: "2024-01-01"
+                    electricityReading: 250
+                    waterReading: 15
+                    electricityFee: 300000
+                    waterFee: 150000
+                    otherFee: 200000
+                    totalAmount: 650000
+                    dueDate: "2024-01-15"
+                    isPaid: false
+                    apartmentId: 1
+                  - id: 2
+                    billingMonth: "2024-01-01"
+                    electricityReading: 280
+                    waterReading: 18
+                    electricityFee: 350000
+                    waterFee: 180000
+                    otherFee: 200000
+                    totalAmount: 730000
+                    dueDate: "2024-01-15"
+                    isPaid: true
+                    apartmentId: 2
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        - bearerAuth: []
+
+    post:
+      tags:
+        - monthly-bills
+      summary: Create new monthly bill
+      description: |
+        **Required Role:** ADMIN
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MonthlyBillRequest'
+            example:
+              billing_month: "2024-02-01"
+              electricity_reading: 260
+              water_reading: 16
+              electricity_fee: 320000
+              water_fee: 160000
+              other_fee: 200000
+              is_paid: false
+              apartment_id: 1
+      responses:
+        '201':
+          description: Monthly bill created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonthlyBillResponse'
+              example:
+                code: 201
+                message: "Create Monthly Bill successfully"
+                data:
+                  id: 3
+                  billingMonth: "2024-02-01"
+                  electricityReading: 260
+                  waterReading: 16
+                  electricityFee: 320000
+                  waterFee: 160000
+                  otherFee: 200000
+                  totalAmount: 680000
+                  dueDate: "2024-02-15"
+                  isPaid: false
+                  apartmentId: 1
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        - bearerAuth: []
+
+  /monthly-bills/{id}:
+    get:
+      tags:
+        - monthly-bills
+      summary: Get monthly bill by ID
+      description: |
+        **Required Role:** USER or ADMIN
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Monthly bill ID
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          description: Monthly bill found successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonthlyBillResponse'
+              example:
+                code: 200
+                message: "Get Monthly Bill by ID: 1 successfully"
+                data:
+                  id: 1
+                  billingMonth: "2024-01-01"
+                  electricityReading: 250
+                  waterReading: 15
+                  electricityFee: 300000
+                  waterFee: 150000
+                  otherFee: 200000
+                  totalAmount: 650000
+                  dueDate: "2024-01-15"
+                  isPaid: false
+                  apartmentId: 1
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        - bearerAuth: []
+
+    put:
+      tags:
+        - monthly-bills
+      summary: Update monthly bill
+      description: |
+        **Required Role:** ADMIN
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Monthly bill ID to update
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MonthlyBillRequest'
+            example:
+              billing_month: "2024-01-01"
+              electricity_reading: 255
+              water_reading: 16
+              electricity_fee: 310000
+              water_fee: 160000
+              other_fee: 200000
+              is_paid: true
+              apartment_id: 1
+      responses:
+        '200':
+          description: Monthly bill updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonthlyBillResponse'
+              example:
+                code: 200
+                message: "Monthly Bill updated successfully"
+                data:
+                  id: 1
+                  billingMonth: "2024-01-01"
+                  electricityReading: 255
+                  waterReading: 16
+                  electricityFee: 310000
+                  waterFee: 160000
+                  otherFee: 200000
+                  totalAmount: 670000
+                  dueDate: "2024-01-15"
+                  isPaid: true
+                  apartmentId: 1
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        - bearerAuth: []
+
+    delete:
+      tags:
+        - monthly-bills
+      summary: Delete monthly bill
+      description: |
+        **Required Role:** ADMIN
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Monthly bill ID to delete
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          description: Monthly bill deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResponse'
+              example:
+                code: 200
+                message: "Monthly Bill deleted successfully"
+                data: null
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        - bearerAuth: []
+
+  /v1/monthly-bills/{id}/send-email:
+    post:
+      tags:
+        - monthly-bills
+      summary: Send monthly bill email to apartment representative
+      description: |
+        **Required Role:** ADMIN
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Monthly bill ID to send
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          description: Email sent successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailResponse'
+              example:
+                code: 200
+                message: "Email sent successfully"
+                data: null
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          description: Email service error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                message: "Failed to send email"
+                error: "Email service unavailable"
+      security:
+        - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT Authentication token
+
+  schemas:
+    MonthlyBillRequest:
+      type: object
+      required:
+        - billing_month
+        - electricity_reading
+        - water_reading
+        - electricity_fee
+        - water_fee
+        - other_fee
+        - is_paid
+        - apartment_id
+      properties:
+        billing_month:
+          type: string
+          format: date
+          description: The month for which this bill is generated
+          example: "2024-01-01"
+        electricity_reading:
+          type: integer
+          description: Electricity meter reading
+          example: 250
+          minimum: 0
+        water_reading:
+          type: integer
+          description: Water meter reading
+          example: 15
+          minimum: 0
+        electricity_fee:
+          type: number
+          format: decimal
+          description: Electricity fee amount
+          example: 300000
+          minimum: 0
+        water_fee:
+          type: number
+          format: decimal
+          description: Water fee amount
+          example: 150000
+          minimum: 0
+        other_fee:
+          type: number
+          format: decimal
+          description: Other fees (maintenance, service, etc.)
+          example: 200000
+          minimum: 0
+        is_paid:
+          type: boolean
+          description: Whether the bill has been paid
+          example: false
+        apartment_id:
+          type: integer
+          format: int64
+          description: ID of the apartment this bill belongs to
+          example: 1
+          minimum: 1
+
+    MonthlyBillResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: HTTP status code
+          example: 200
+        message:
+          type: string
+          description: Response message
+          example: "Success"
+        data:
+          $ref: '#/components/schemas/MonthlyBill'
+
+    MonthlyBillListResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: HTTP status code
+          example: 200
+        message:
+          type: string
+          description: Response message
+          example: "Get all monthly bills"
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/MonthlyBill'
+
+    MonthlyBill:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique monthly bill ID
+          example: 1
+        billingMonth:
+          type: string
+          format: date
+          description: The month for which this bill is generated
+          example: "2024-01-01"
+        electricityReading:
+          type: integer
+          description: Electricity meter reading
+          example: 250
+        waterReading:
+          type: integer
+          description: Water meter reading
+          example: 15
+        electricityFee:
+          type: number
+          format: decimal
+          description: Electricity fee amount
+          example: 300000
+        waterFee:
+          type: number
+          format: decimal
+          description: Water fee amount
+          example: 150000
+        otherFee:
+          type: number
+          format: decimal
+          description: Other fees (maintenance, etc.)
+          example: 200000
+        totalAmount:
+          type: number
+          format: decimal
+          description: Total amount due (calculated automatically)
+          example: 650000
+        dueDate:
+          type: string
+          format: date
+          description: Payment due date
+          example: "2024-01-15"
+        isPaid:
+          type: boolean
+          description: Whether the bill has been paid
+          example: false
+        apartmentId:
+          type: integer
+          format: int64
+          description: ID of the apartment this bill belongs to
+          example: 1
+
+    DeleteResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: HTTP status code
+          example: 200
+        message:
+          type: string
+          description: Response message
+          example: "Monthly Bill deleted successfully"
+        
+
+    EmailResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: HTTP status code
+          example: 200
+        message:
+          type: string
+          description: Response message
+          example: "Email sent successfully"
+
+
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: HTTP status code
+          example: 400
+        message:
+          type: string
+          description: Error message
+          example: "Validation failed"
+        error:
+          type: string
+          description: Detailed error information
+          example: "Invalid input data"
+        timestamp:
+          type: string
+          format: date-time
+          description: When the error occurred
+          example: "2024-01-15T10:30:00Z"
+
+    ValidationErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: HTTP status code
+          example: 400
+        message:
+          type: string
+          description: Validation error message
+          example: "Validation failed"
+        data:
+          type: object
+          nullable: true
+          description: Validation error details
+          example:
+            errors:
+              - field: "billing_month"
+                message: "Billing month is required"
+              - field: "electricity_reading"
+                message: "Electricity reading must be at least 0"
+
+  responses:
+    BadRequest:
+      description: Bad request - Invalid parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: 400
+            message: "Invalid request parameters"
+            error: "Missing required parameters"
+
+    ValidationError:
+      description: Validation error - Invalid input data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationErrorResponse'
+          example:
+            code: 400
+            message: "Validation failed"
+            data:
+              errors:
+                - field: "billing_month"
+                  message: "Billing month is required"
+                - field: "electricity_fee"
+                  message: "Electricity fee must be at least 0.00"
+
+    Unauthorized:
+      description: Unauthorized - Invalid or missing authentication token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: 401
+            message: "Unauthorized: Missing or invalid token"
+            error: "JWT token is invalid or expired"
+
+    Forbidden:
+      description: Forbidden - Insufficient permissions for this operation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: 403
+            message: "Forbidden: Insufficient permissions"
+            error: "Admin role required for this operation"
+
+    NotFound:
+      description: Not found - Monthly bill does not exist
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: 404
+            message: "Monthly bill not found with ID: 999"
+            error: "Resource not found"

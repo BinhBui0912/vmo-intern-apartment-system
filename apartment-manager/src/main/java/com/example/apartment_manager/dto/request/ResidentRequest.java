@@ -8,10 +8,12 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class ResidentRequest {
     @JsonProperty("fullname")
     @NotBlank(message = "Full name cannot be empty")
